@@ -1,0 +1,3 @@
+- insert:
+    - id: arabic-locale
+      name: 'dsh-plugin-arabic-locale'

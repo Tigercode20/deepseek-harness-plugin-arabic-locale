@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Arabic UI language",
+    "description": "Adds Arabic (right to left) to the interface language list and translates the shared, sidebar, approval, and language-row text. Untranslated keys fall back to English.",
+    "detail": "docs/DETAIL.md"
+  }
+}

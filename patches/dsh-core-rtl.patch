@@ -1,0 +1,225 @@
+diff --git a/packages/client/ui-conversation/src/client/input/editor/ComposerContentEditable.tsx b/packages/client/ui-conversation/src/client/input/editor/ComposerContentEditable.tsx
+index b975ee1f2c..13cfac5031 100644
+--- a/packages/client/ui-conversation/src/client/input/editor/ComposerContentEditable.tsx
++++ b/packages/client/ui-conversation/src/client/input/editor/ComposerContentEditable.tsx
+@@ -43,6 +43,10 @@ export function ComposerContentEditable({ editor, editable, ...rest }: ComposerC
+       suppressContentEditableWarning
+       role="textbox"
+       aria-multiline="true"
++      // dir="auto" derives the writing direction from the first strong
++      // character the user types, so Arabic input starts at the right edge
++      // without a language toggle; an empty composer keeps the page direction.
++      dir="auto"
+       data-composer-input
+       {...rest}
+     />
+diff --git a/packages/client/ui-primitives/src/UserMessageBubble.module.css b/packages/client/ui-primitives/src/UserMessageBubble.module.css
+index b004e22374..7c2cc67100 100644
+--- a/packages/client/ui-primitives/src/UserMessageBubble.module.css
++++ b/packages/client/ui-primitives/src/UserMessageBubble.module.css
+@@ -9,3 +9,10 @@
+   white-space: pre-wrap;
+   word-break: break-word;
+ }
++
++/* Arabic runs taller than Latin at the same size — harakat above the letter and
++   a deeper connected baseline — so a right-to-left bubble opens its line box
++   instead of letting one line's marks sit on the line above. */
++.bubble:dir(rtl) {
++  line-height: calc(27px + var(--dsh-content-font-delta, 0px));
++}
+diff --git a/packages/client/ui-primitives/src/UserMessageBubble.tsx b/packages/client/ui-primitives/src/UserMessageBubble.tsx
+index dc9f89bf88..6e13b801bb 100644
+--- a/packages/client/ui-primitives/src/UserMessageBubble.tsx
++++ b/packages/client/ui-primitives/src/UserMessageBubble.tsx
+@@ -12,5 +12,8 @@ export type UserMessageBubbleProps = ComponentPropsWithoutRef<'div'>
+  * @returns A theme-aware message surface that wraps its content.
+  */
+ export function UserMessageBubble({ className, ...props }: UserMessageBubbleProps) {
+-  return <div {...props} className={clsx(css.bubble, className)} />
++  // dir="auto": an Arabic user message lays its own text right-to-left, while an
++  // English one keeps left alignment. The renderer still owns the row placement,
++  // so the bubble stays in its column and only its inline direction flips.
++  return <div dir="auto" {...props} className={clsx(css.bubble, className)} />
+ }
+diff --git a/packages/client/ui-primitives/src/markdown/MarkdownText.module.css b/packages/client/ui-primitives/src/markdown/MarkdownText.module.css
+index a13f0a6a40..8ef09f1a71 100644
+--- a/packages/client/ui-primitives/src/markdown/MarkdownText.module.css
++++ b/packages/client/ui-primitives/src/markdown/MarkdownText.module.css
+@@ -9,6 +9,39 @@
+   color: var(--dsw-alias-label-primary);
+ }
+ 
++/* Bidi: blocks carry dir="auto" from the renderer, so alignment must follow the
++   block's own direction instead of an inherited left/right. `start` resolves to
++   the right edge for an Arabic paragraph and the left edge for an English one. */
++.markdown :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, td, th) {
++  text-align: start;
++}
++
++/* Code is authored left-to-right whatever surrounds it: keep source lines and
++   their indentation readable inside Arabic prose, and isolate them so a code
++   token neither reorders the sentence nor picks up its direction. */
++.markdown pre {
++  direction: ltr;
++  unicode-bidi: isolate;
++  text-align: left;
++}
++
++.markdown :not(pre) > code {
++  direction: ltr;
++  unicode-bidi: isolate;
++}
++
++/* Arabic script needs a taller line box than Latin at the same size: harakat sit
++   above the letter and the connected baseline runs deeper, so a Latin line-height
++   lets one line's marks collide with the line above. :dir(rtl) matches blocks
++   whose dir="auto" resolved to right-to-left, leaving English copy untouched. */
++.markdown :where(p, li, blockquote, td, th):dir(rtl) {
++  line-height: 1.85;
++}
++
++.markdown.compact :where(p, li, td, th):dir(rtl) {
++  line-height: 1.75;
++}
++
+ .markdown strong {
+   font-weight: 600;
+ }
+@@ -103,12 +136,14 @@
+   width: 1.1em;
+   height: 1.1em;
+   vertical-align: -0.25em;
+-  margin-right: 5px;
++  margin-inline-end: 5px;
+ }
+ 
+ .markdown :where(ul, ol) {
+   margin: 16px 0;
+-  padding-left: 18px;
++  /* The indent sits on the list's start side, so an RTL list keeps its markers
++     beside the text instead of on the opposite edge. */
++  padding-inline-start: 18px;
+ }
+ 
+ .markdown li:not(:first-child) {
+@@ -127,7 +162,7 @@
+ /* Nested ol under ul/ol: markers inside (models sometimes emit this shape). */
+ .markdown :where(ul, ol) ol {
+   list-style-position: inside;
+-  padding-left: 0;
++  padding-inline-start: 0;
+ }
+ 
+ .markdown :where(ul, ol) ol li p {
+@@ -156,9 +191,9 @@
+ }
+ 
+ .markdown blockquote {
+-  border-left: 2px solid var(--dsw-alias-label-caption);
++  border-inline-start: 2px solid var(--dsw-alias-label-caption);
+   margin: 16px 0 0;
+-  padding-left: 14px;
++  padding-inline-start: 14px;
+ }
+ 
+ .markdown pre {
+@@ -192,7 +227,8 @@
+ }
+ 
+ .markdown input[type='checkbox'] {
+-  margin: 0 8px 0 0;
++  margin: 0;
++  margin-inline-end: 8px;
+   accent-color: var(--dsw-alias-label-secondary);
+ }
+ 
+@@ -276,11 +312,11 @@
+ 
+ .tableScroll th:first-child,
+ .tableScroll td:first-child {
+-  padding-left: 0;
++  padding-inline-start: 0;
+ }
+ 
+ .tableScroll td:last-child {
+-  padding-right: 0;
++  padding-inline-end: 0;
+ }
+ 
+ .tableScroll table code {
+@@ -380,7 +416,7 @@
+ }
+ 
+ .compact blockquote {
+-  padding-left: 8px;
++  padding-inline-start: 8px;
+ }
+ 
+ .compact hr {
+@@ -436,7 +472,7 @@
+   width: 100%;
+   max-width: 100%;
+   margin: 4px 0;
+-  padding-left: 0;
++  padding-inline-start: 0;
+ }
+ 
+ .markdown.compact .tableScroll > table {
+diff --git a/packages/client/ui-primitives/src/markdown/render.tsx b/packages/client/ui-primitives/src/markdown/render.tsx
+index 8d24014135..a8f99e1443 100644
+--- a/packages/client/ui-primitives/src/markdown/render.tsx
++++ b/packages/client/ui-primitives/src/markdown/render.tsx
+@@ -316,13 +316,18 @@ function renderNode(node: Md.RootContent, key: Key, context: MarkdownRenderConte
+   switch (node.type) {
+     case 'text':
+       return node.value
++    // Bidi policy: every prose block carries dir="auto" so an Arabic paragraph,
++    // heading, quote, list, or cell lays itself out right-to-left while adjacent
++    // English blocks keep left-to-right alignment. Code keeps its own direction
++    // (see the pre/code rules in MarkdownText.module.css) because source text is
++    // authored left-to-right regardless of the language around it.
+     case 'paragraph':
+-      return <p key={key}>{renderChildren(node.children, context)}</p>
++      return <p key={key} dir="auto">{renderChildren(node.children, context)}</p>
+     case 'heading':
+-      return createElement(`h${node.depth}`, { key }, ...renderChildren(node.children, context))
++      return createElement(`h${node.depth}`, { key, dir: 'auto' }, ...renderChildren(node.children, context))
+     case 'blockquote':
+       return (
+-        <blockquote key={key}>
++        <blockquote key={key} dir="auto">
+           {wrapBlockChildren(
+             renderChildren(node.children, { ...context, inBlockquote: true }).filter(child => child !== null),
+             true,
+@@ -476,7 +481,9 @@ function listItemLoose(item: Md.ListItem): boolean {
+ 
+ function renderList(node: Md.List, key: Key, context: MarkdownRenderContext): ReactNode {
+   const loose = listLoose(node)
+-  const properties: { start?: number; className?: string } = {}
++  // dir="auto" on the list container flips the markers and the indent side for
++  // an Arabic list; items inherit it and re-decide for their own text below.
++  const properties: { start?: number; className?: string; dir?: 'auto' } = { dir: 'auto' }
+   if (typeof node.start === 'number' && node.start !== 1) properties.start = node.start
+   if (node.children.some(item => typeof item.checked === 'boolean')) {
+     properties.className = 'contains-task-list'
+@@ -520,7 +527,7 @@ function renderListItem(
+   const tail = entries[entries.length - 1]
+   if (tail !== undefined && (loose || !('paragraph' in tail))) parts.push('\n')
+   return (
+-    <li key={key} className={task ? 'task-list-item' : undefined}>
++    <li key={key} dir="auto" className={task ? 'task-list-item' : undefined}>
+       {parts}
+     </li>
+   )
+@@ -576,7 +583,9 @@ function renderTableRow(
+       cellTag,
+       // hast-util-to-jsx-runtime's default tableCellAlignToStyle turned the
+       // deprecated align attribute into an inline style; keep that DOM.
+-      { key: index, style: alignValue == null ? undefined : { textAlign: alignValue } },
++      // Each cell decides its own bidi direction, so an Arabic cell reads
++      // right-to-left next to an English one.
++      { key: index, dir: 'auto', style: alignValue == null ? undefined : { textAlign: alignValue } },
+       ...(cell === undefined ? [] : renderChildren(cell.children, context)),
+     ))
+   }
