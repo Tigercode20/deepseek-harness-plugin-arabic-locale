@@ -1,5 +1,5 @@
 {
-  "name": "dsh-plugin-arabic-locale",
+  "name": "deepseek-harness-plugin-arabic-locale",
   "version": "1.0.0",
   "description": "Arabic (right-to-left) language pack for the DeepSeek Harness Web UI",
   "license": "MIT",
@@ -41,11 +41,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tigercode20/dsh-plugin-arabic-locale.git"
+    "url": "git+https://github.com/Tigercode20/deepseek-harness-plugin-arabic-locale.git"
   },
-  "homepage": "https://github.com/Tigercode20/dsh-plugin-arabic-locale#readme",
+  "homepage": "https://github.com/Tigercode20/deepseek-harness-plugin-arabic-locale#readme",
   "bugs": {
-    "url": "https://github.com/Tigercode20/dsh-plugin-arabic-locale/issues"
+    "url": "https://github.com/Tigercode20/deepseek-harness-plugin-arabic-locale/issues"
   },
   "author": "Tigercode20"
 }

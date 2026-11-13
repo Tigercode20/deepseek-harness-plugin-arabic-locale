@@ -1,4 +1,4 @@
-# dsh-plugin-arabic-locale
+# deepseek-harness-plugin-arabic-locale
 
 Arabic (right-to-left) language pack for the **DeepSeek Harness** Web UI.
 
@@ -56,15 +56,15 @@ human check. Please open an issue with a screenshot if something looks off.
 ### From npm (after publishing)
 
 ```bash
-dsh plugin add dsh-plugin-arabic-locale
+dsh plugin add deepseek-harness-plugin-arabic-locale
 ```
 
-or in the app: **Plugins → Add plugin** → `dsh-plugin-arabic-locale`.
+or in the app: **Plugins → Add plugin** → `deepseek-harness-plugin-arabic-locale`.
 
 ### From a GitHub repository
 
 ```bash
-dsh plugin add https://github.com/<you>/dsh-plugin-arabic-locale
+dsh plugin add https://github.com/<you>/deepseek-harness-plugin-arabic-locale
 ```
 
 ### From a local directory
@@ -72,7 +72,7 @@ dsh plugin add https://github.com/<you>/dsh-plugin-arabic-locale
 1. Download or clone this repository.
 2. In DSH: **Plugins → Add plugin** → the repository directory, or
    ```bash
-   dsh plugin add /absolute/path/to/dsh-plugin-arabic-locale
+   dsh plugin add /absolute/path/to/deepseek-harness-plugin-arabic-locale
    ```
 3. Restart DSH if the plugin list asks for it.
 

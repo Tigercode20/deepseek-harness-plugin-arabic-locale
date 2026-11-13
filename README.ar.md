@@ -1,4 +1,4 @@
-# dsh-plugin-arabic-locale
+# deepseek-harness-plugin-arabic-locale
 
 حزمة لغة عربية (من اليمين إلى اليسار) لواجهة **DeepSeek Harness**.
 
@@ -44,9 +44,9 @@
 ## التثبيت
 
 ```bash
-dsh plugin add dsh-plugin-arabic-locale
+dsh plugin add deepseek-harness-plugin-arabic-locale
 # أو من مستودع GitHub
-dsh plugin add https://github.com/<you>/dsh-plugin-arabic-locale
+dsh plugin add https://github.com/<you>/deepseek-harness-plugin-arabic-locale
 ```
 
 أو من التطبيق: **Plugins ← Add plugin** ثم اسم الحزمة أو مسار المجلد المحلي.

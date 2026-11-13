@@ -10,7 +10,7 @@
  * intact — the caller substitutes them after translation.
  */
 window.__ModuleLoader__.load({
-  id: 'dsh-plugin-arabic-locale',
+  id: 'deepseek-harness-plugin-arabic-locale',
   factory() {
     /** Namespace → Arabic dictionary. Extend this map to translate more surfaces. */
     const dictionaries = {
