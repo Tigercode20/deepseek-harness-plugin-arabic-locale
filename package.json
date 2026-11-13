@@ -38,5 +38,14 @@
         "@deepseek-ai/dsh-client-locale"
       ]
     }
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tigercode20/dsh-plugin-arabic-locale.git"
+  },
+  "homepage": "https://github.com/Tigercode20/dsh-plugin-arabic-locale#readme",
+  "bugs": {
+    "url": "https://github.com/Tigercode20/dsh-plugin-arabic-locale/issues"
+  },
+  "author": "Tigercode20"
 }
