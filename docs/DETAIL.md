@@ -33,10 +33,13 @@ restores the original direction.
 
 ## Coverage
 
-1,787 of the interface's 1,793 English strings (99.7%), measured namespace by
-namespace against each package's `en` dictionary. The six remaining keys are
-the `/command` tokens (`goal`, `plan`, `feedback`, `compact`, `permission`,
-`export`): they are text the user types after `/`, so they stay English.
+1,849 of the interface's 2,505 English strings (74%) across 35 of the 44
+namespaces, measured against each package's `en` dictionary. The largest
+remaining namespaces are `trajectory` (198 keys), `schedule.manager` (155),
+`deliverables` (57), `subagent` (47), and the web-search / shell / agent-loop
+settings pages; they fall back to English per key. The six `/command` tokens
+(`goal`, `plan`, `feedback`, `compact`, `permission`, `export`) stay English on
+purpose: they are text the user types after `/`.
 
 ## Fallback behavior
 

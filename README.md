@@ -20,26 +20,27 @@ mirrors the document to `dir="rtl"` while Arabic is active.
 
 ### Coverage
 
-Measured against each package's own `en` dictionary:
+Measured against every package's own `en` dictionary — 44 namespaces, 2,505 keys:
 
 | | |
 | --- | --- |
-| English strings in the client | **1,793** |
-| Translated here | **1,787** (99.7%) |
-| Namespaces registered | **29** |
+| English strings in the client | **2,505** |
+| Translated here | **1,849** (74%) across **35** namespaces |
+| Not yet translated | `trajectory` (198), `schedule.manager` (155), `deliverables` (57), `subagent` (47), `settings.webSearch` (43), `settings.subagent` (35), `shortcuts` (32), `open-in-app` (29), `workflowRun` (18), `settings.shell` (14), `settings.agentLoop` (12), `slash.menu` (9), `shortcuts.layout` (1) — each falls back to English per key |
 | Deliberately untranslated | the six `/command` tokens (`goal`, `plan`, `feedback`, `compact`, `permission`, `export`) — they are text the user types after `/`, not labels |
 
 Covered surfaces: conversation transcript, tool rows and detail fields, composer,
 queue, attachments, to-dos, sidebar and session list, workspace menus, settings
-(General, Models, Account, Permission, Language), files panel, document preview,
-right sidebar, question cards, feedback dialog, goal chip, plan, skills,
-`@`-mention menu, plugin manager, plugin market, and the built-in plugin list.
+(General, Models, Account, Permission, Language, Built-in plugins), files panel,
+document preview, right sidebar, question cards, feedback dialog, goal chip,
+plan, skills, `@`-mention menu, automation tasks, background jobs, agent-preset
+picker, plugin manager, and plugin market.
 
 ### Verified
 
 - 2,069 client tests in `@deepseek-ai/dsh-client-ui-primitives` pass with the
   companion RTL rendering change.
-- The module is exercised by a loader shim: it registers the language, 29
+- The module is exercised by a loader shim: it registers the language, 35
   dictionaries, and flips `dir` to `rtl` on `ar` and back on any other locale.
 - Coverage is compared programmatically against every package's `en` keys; there
   are no keys this pack defines that the host does not own.
